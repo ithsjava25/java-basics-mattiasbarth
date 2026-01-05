@@ -49,6 +49,13 @@ public class Main {
         prices.addAll(api.getPriser(date, zone));
         prices.addAll(api.getPriser(date.plusDays(1), zone));
 
+        //Ta bort timmar som redan har passerat
+        prices.removeIf(p -> p.timeEnd().isBefore(java.time.ZonedDateTime.now()));
+
+        //Sorterar
+        if (argsMap.containsKey("--sorted")) {
+            prices.sort((p1, p2) -> Double.compare(p2.sekPerKWh(),  p1.sekPerKWh()));
+        }
 
         if (prices.isEmpty()) {
             System.out.println("Ingen prisdata tillgänglig. Priserna för nästa dag uppdateras kl 13:00.");
