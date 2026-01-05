@@ -5,6 +5,7 @@ import com.example.api.ElpriserAPI.Elpris;
 import com.example.api.ElpriserAPI.Prisklass;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,12 +113,15 @@ public class Main {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd 'kl' HH:mm");
         Elpris start = prices.get(startIndex);
-        Elpris end = prices.get(startIndex + hours - 1);
+        ZonedDateTime startTime = start.timeStart();
+        ZonedDateTime endTime = startTime.plusMinutes(hours * 60L);
+
+        double averagePrice = minSum / hours;
 
         System.out.println("\nBästa fönster för laddning:");
-        System.out.println("Start: " + start.timeStart().format(formatter));
-        System.out.println("Slut : " + end.timeEnd().format(formatter));
-        System.out.printf("Totalkostnad: %.2f SEK", minSum);
+        System.out.println("Start: " + startTime.format(formatter));
+        System.out.println("Slut : " + endTime.format(formatter));
+        System.out.printf("Genomsnittspris: %.2f SEK/kWh%n", averagePrice);
     }
 
     private static Map<String, String> parseArgs(String[] args) {
